@@ -1,0 +1,28 @@
+---
+- name: initiate IO
+  hosts: io_workers
+  remote_user: root
+  vars: 
+    device_id: "{{ 1000 | random | to_uuid | upper }}"
+#
+# Check ansible doc here https://docs.ansible.com/ansible/latest/collections/ansible/builtin/apt_module.html
+# install additional packages as you need
+
+  tasks:
+  - name: Ensure Docker is at the latest version
+    ansible.builtin.apt:
+      name: docker
+      update_cache: yes
+    become: yes       # become sudo user
+  - name: Log into DockerHub
+      docker_login:
+        username: <your user name>
+        password: <your password>
+
+  - name: pulling latest binary 
+    ansible.builtin.shell:
+      cmd: curl -L https://github.com/ionet-official/io-net-official-setup-script/raw/main/ionet-setup.sh -o ionet-setup.sh
+
+  - name: change shell script permission 
+    ansible.builtin.shell:
+      cmd: echo {{device_id}} > device_id.txt && chmod +x ionet-setup.sh && ./ionet-setup.sh && ./launch_binary_linux --device_id={{ device_id }} --user_id=<<figure out your user id>> --operating_system="Linux" --usegpus=true --device_name=<< figure out your device name generator>>

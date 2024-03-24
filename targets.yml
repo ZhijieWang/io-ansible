@@ -1,0 +1,10 @@
+io_workers:
+  hosts:
+    # host definition supports both fqdn and ip
+    #whitebox.local
+    192.168.1.127
+  vars:
+    ansible_user: <your user name>
+#   password is optional and not recommended. you can also run ansible commands with -k to supply password
+#   it will require sshpass programm installed
+#   ansible_password: <your password>
